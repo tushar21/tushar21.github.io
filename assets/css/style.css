@@ -440,7 +440,7 @@ main {
 
 .social-item .social-link {
   color: var(--light-gray-70);
-  font-size: 18px;
+  font-size: 24px;
 }
 
 
@@ -1879,4 +1879,22 @@ textarea.form-input::-webkit-resizer { display: none; }
 
   .timeline-text { max-width: 700px; }
 
+}
+
+
+.download-cv {
+ text-align: center;
+ display: block;
+ border: solid 2px;
+ border-color: var(--orange-yellow-crayola);
+ 
+ border-radius: 5px;
+  box-shadow: var(--shadow-1);
+
+}
+
+
+.download-cv a{
+  color: var(--orange-yellow-crayola);
+  padding: 10px 5px;
 }
