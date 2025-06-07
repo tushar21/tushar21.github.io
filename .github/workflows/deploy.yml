@@ -1,0 +1,49 @@
+name: Node.js and React Project for `tushar-portfolio` CI with Docker and SSDNode
+
+on:
+  push:
+    branches:
+      - "master"
+
+jobs:
+  docker-setup:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Set up QEMU
+        uses: docker/setup-qemu-action@v3
+
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v3
+
+      - name: Login to Docker Hub
+        uses: docker/login-action@v3
+        with:
+          username: ${{ secrets.DOCKERHUB_USERNAME }}
+          password: ${{ secrets.DOCKERHUB_TOKEN }}
+
+      - name: Build and push
+        uses: docker/build-push-action@v6
+        with:
+          context: .
+          push: true
+          tags: aperrasolutions/tushar-portfolio:latest
+
+  build-and-deploy:
+    needs: docker-setup
+    runs-on: ubuntu-latest
+    steps:
+      - name: Executing SSH in SSDNODE
+        uses: appleboy/ssh-action@v1.0.3
+        with:
+          host: ${{ secrets.SSDNODE_HOST }}
+          username: ${{ secrets.SSDNODE_USERNAME }}
+          password: ${{ secrets.SSDNODE_PASSWORD }}
+          script: |
+            sudo docker stop tushar-portfolio || true
+            sudo docker rm tushar-portfolio || true
+            sudo docker image rm aperrasolutions/tushar-portfolio:latest || true
+            sudo docker run --name tushar-portfolio -d -p 4052:80 \
+              aperrasolutions/tushar-portfolio:latest
